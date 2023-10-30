@@ -33,7 +33,9 @@ const SearchSideBar = ({
         {locations.map((loc, index) => {
           return (
             <Link
-              className="font-light text-reg capitalize block"
+              className={`text-reg capitalize block ${
+                loc.name === searchParams.city?.toLowerCase() ? "font-bold " : "font-light"
+              }`}
               key={index}
               href={{ pathname: `/search`, query: { ...searchParams, city: loc.name } }}
             >
@@ -47,7 +49,9 @@ const SearchSideBar = ({
         {cuisines.map((cuisine, index) => {
           return (
             <Link
-              className="font-light text-reg capitalize block"
+              className={`text-reg capitalize block ${
+                cuisine.name === searchParams.cuisine?.toLowerCase() ? "font-bold " : "font-light"
+              }`}
               key={index}
               href={{ pathname: `/search`, query: { ...searchParams, cuisine: cuisine.name } }}
             >
@@ -63,7 +67,9 @@ const SearchSideBar = ({
           {prices.map((p, index) => {
             return (
               <Link
-                className="border w-full text-reg font-light rounded p-2 text-center"
+                className={`border w-full text-reg rounded p-2 text-center ${
+                  p.price === searchParams.price ? "font-bold " : "font-light"
+                }`}
                 href={{ pathname: `/search`, query: { ...searchParams, price: p.price } }}
               >
                 {p.label}

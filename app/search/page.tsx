@@ -28,6 +28,20 @@ const fetchRestaurantsByCity = async (city: string | undefined) => {
     select,
   });
 };
+const fetchRestaurantsBySearchParam = async (searchParams: SearchParams) => {
+  const { city, cuisine, price } = searchParams;
+
+  const where: any = {};
+  if (city) where.location = { name: { equals: city.toLowerCase() } };
+  if (cuisine) where.cuisine = { name: { equals: cuisine.toLowerCase() } };
+  if (price) where.price = { equals: price };
+  // if (!city) return prisma.restaurant.findMany({ select });
+
+  return prisma.restaurant.findMany({
+    where,
+    select,
+  });
+};
 
 const fetchLocations = async () => {
   return prisma.location.findMany();
@@ -47,11 +61,13 @@ const Search = async ({ searchParams }: { searchParams: SearchParams }) => {
   // const city = props?.searchParams?.city;
   // const cuisine = props?.searchParams?.cuisine;
   // const price = props?.searchParams?.price;
+  console.log("searchParams:", searchParams);
 
   // if (!city) {
   //   throw new Error("Err");
   // }
-  const restaurants = await fetchRestaurantsByCity(searchParams.city);
+  // const restaurants = await fetchRestaurantsByCity(searchParams.city);
+  const restaurants = await fetchRestaurantsBySearchParam(searchParams);
   // console.log("restaurants:", { restaurants });
 
   // const locations = new Set(restaurants.map((rest) => rest.location.name));

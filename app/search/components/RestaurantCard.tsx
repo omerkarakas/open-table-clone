@@ -14,7 +14,7 @@ export type RestaurantCardProps = {
 };
 
 const RestaurantCard = ({ restaurant }: { restaurant: RestaurantCardProps }) => {
-  console.log(restaurant);
+  // console.log(restaurant);
   return (
     <div className="border-b flex pb-5 ml-5">
       <img src={restaurant.main_image} alt="" className="w-44 h-36 rounded" />
