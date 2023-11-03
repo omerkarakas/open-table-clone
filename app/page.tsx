@@ -1,4 +1,4 @@
-import { Cuisine, Location, PRICE, PrismaClient } from "@prisma/client";
+import { Cuisine, Location, PRICE, PrismaClient, Review } from "@prisma/client";
 // import { Inter } from "@next/font/google";
 import Header from "./components/Header";
 import RestaurantCard from "./components/RestaurantCard";
@@ -13,6 +13,7 @@ export interface RestaurantCardType {
   cuisine: Cuisine;
   location: Location;
   price: PRICE;
+  reviews: Review[];
 }
 
 const prisma = new PrismaClient();
@@ -27,21 +28,38 @@ const fetchRestaurants = async (): Promise<RestaurantCardType[]> => {
       cuisine: true,
       location: true,
       price: true,
+      reviews: true,
     },
   });
   return restaurants;
 };
 
+// const fetchReviews = async (): Promise<Review[]> => {
+//   const reviews = await prisma.review
+//     .findMany    ();
+//   return reviews;
+// };
+
 export default async function Home() {
   const restaurants = await fetchRestaurants();
-  // console.log({ restaurants });
+  // const reviews = await fetchReviews();
+  // console.log("reviews:", reviews);
   return (
     <main>
       <Header />
       <div className="py-3 px-36 mt-10 flex flex-wrap justify-center">
-        {restaurants.map((restaurant) => (
-          <RestaurantCard restaurant={restaurant} key={restaurant.id} />
-        ))}
+        {restaurants.map((restaurant) => {
+          // const restaurantReviews = reviews.filter(
+          //   (review) => review.restaurant_id === restaurant.id
+          // );
+          return (
+            <RestaurantCard
+              restaurant={restaurant}
+              key={restaurant.id}
+              // reviews={restaurantReviews}
+            />
+          );
+        })}
       </div>
     </main>
   );
