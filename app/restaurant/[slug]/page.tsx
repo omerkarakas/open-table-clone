@@ -7,7 +7,7 @@ import RestaurantNavBar from "./components/RestaurantNavBar";
 import Reviews from "./components/Reviews";
 import Title from "./components/Title";
 import { PrismaClient, Review } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 
 const prisma = new PrismaClient();
 
@@ -36,7 +36,9 @@ const fetchRestaurantBySlug = async (slug: string): Promise<Restaurant> => {
     where: { slug },
   });
   if (!restaurant) {
-    throw new Error("No restaurant named [" + slug + "]");
+    notFound();
+
+    // throw new Error("Can not find restaurant [" + slug + "]");
   }
   return restaurant;
 };
