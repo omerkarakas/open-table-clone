@@ -39,3 +39,6 @@ next-env.d.ts
 /html
 
 /.vscode
+
+#lock files
+package-lock.json
