@@ -4,9 +4,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import validator from "validator";
 import * as jose from "jose";
 
+const prisma = new PrismaClient();
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log("signin called");
   if (req.method !== "POST") {
-    return res.status(404).json("unknown endpoint");
+    return res.status(404).json({ error: "unknown endpoint" });
   }
 
   let { email, password } = req.body;
@@ -30,8 +33,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (errors.length > 0) {
     return res.status(400).json({ errorMessage: errors[0] });
   }
-
-  const prisma = new PrismaClient();
 
   //   const userWithEmail = await prisma.user.findUnique({ where: { email } });
   const userWithEmail = await prisma.user.findFirst({ where: { email } });

@@ -1,14 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import validator from "validator";
-import bcrypt from "bcrypt";
-import * as jose from "jose";
+// import bcrypt from "bcrypt";
+import { hash } from "bcrypt";
+// import * as jose from "jose";
+import { SignJWT } from "jose";
 
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    return res.status(404).json("unknown endpoint");
+    return res.status(404).json({ error: "unknown endpoint" });
   }
 
   let { firstName, lastName, email, phone, city, password } = req.body;
@@ -55,7 +57,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ errorMessage: "existing user with email: " + email });
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await hash(password, 10);
 
   const user = await prisma.user.create({
     data: {
@@ -71,7 +74,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const alg = "HS256";
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-  const token = await new jose.SignJWT({ email: user.email })
+  // const token = await new jose.SignJWT({ email: user.email })
+  const token = await new SignJWT({ email: user.email })
     .setProtectedHeader({ alg })
     .setExpirationTime("24h")
     .sign(secret);
