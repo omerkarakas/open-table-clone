@@ -1,3 +1,4 @@
+"use client";
 import SearchBar from "./SearchBar";
 
 type Props = {};
