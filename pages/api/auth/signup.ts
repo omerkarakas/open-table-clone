@@ -5,10 +5,14 @@ import validator from "validator";
 import { hash } from "bcrypt";
 // import * as jose from "jose";
 import { SignJWT } from "jose";
+import { setCookie } from "cookies-next";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "POST") {
     return res.status(404).json({ error: "unknown endpoint" });
   }
@@ -54,7 +58,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const userWithEmail = await prisma.user.findFirst({ where: { email } });
   console.log("userWithEmail:", userWithEmail);
   if (userWithEmail) {
-    return res.status(400).json({ errorMessage: "existing user with email: " + email });
+    return res
+      .status(400)
+      .json({ errorMessage: "existing user with email: " + email });
   }
 
   // const hashedPassword = await bcrypt.hash(password, 10);
@@ -80,5 +86,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .setExpirationTime("24h")
     .sign(secret);
 
-  return res.status(200).json({ token });
+  setCookie("jwt", token, { req, res, maxAge: 60 * 24 });
+
+  return res.status(200).json({
+    firstName: user?.first_name,
+    lastName: user?.last_name,
+    email: user?.email,
+    phone: user?.phone,
+    city: user?.city,
+  });
 }

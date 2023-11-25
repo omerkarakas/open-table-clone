@@ -30,7 +30,9 @@ export type AuthFormInputsType = {
   password: string;
 };
 
-export type handleInputChangeType = (e: React.ChangeEvent<HTMLInputElement>) => void;
+export type handleInputChangeType = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => void;
 
 export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
   const [open, setOpen] = useState(false);
@@ -79,13 +81,17 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
   const handleClick = () => {
     if (isSignIn) {
       signIn(inputs.email, inputs.password, handleClose);
+    } else {
+      signUp(inputs, handleClose);
     }
   };
 
   return (
-    <div>
+    <div className="flex flex-row items-center text-sm font-semibold">
       <button
-        className={`border p-1 px-4 rounded mr-3 ${isSignIn ? "bg-blue-400 text-white " : ""}`}
+        className={`border p-1 px-4 rounded mr-3 ${
+          isSignIn ? "bg-blue-400 text-white " : ""
+        }`}
         onClick={handleOpen}
       >
         {isSignIn ? "Sign in" : "Sign up"}
@@ -98,22 +104,26 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
       >
         <Box sx={style}>
           {loading ? (
-            <div className="flex justify-center items-center p-2 h-96">
+            <div className="flex justify-center items-center p-2 h-128">
               <CircularProgress />
             </div>
           ) : (
-            <div className="p-2 h-96">
+            <div className="p-2 h-128">
               {error && (
                 <Alert severity="error" className="mb-4">
                   {error}
                 </Alert>
               )}
               <div className="uppercase font-bold text-center pb-2 border-b mb-2 border-blue-400">
-                <p className="text-sm">{isSignIn ? "Sign In" : "Create Account"}</p>
+                <p className="text-sm">
+                  {isSignIn ? "Sign In" : "Create Account"}
+                </p>
               </div>
               <div className="m-auto">
                 <h2 className="text-2xl font-light text-center">
-                  {isSignIn ? "Log Into Your Account" : "Create Your OpenTable Account"}
+                  {isSignIn
+                    ? "Log Into Your Account"
+                    : "Create Your OpenTable Account"}
                 </h2>
 
                 <AuthModalForm

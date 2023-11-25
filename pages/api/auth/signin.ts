@@ -2,12 +2,15 @@ import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import validator from "validator";
-import * as jose from "jose";
 import { setCookie } from "cookies-next";
+import { SignJWT } from "jose";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   console.log("signin called");
   if (req.method !== "POST") {
     return res.status(404).json({ error: "unknown endpoint" });
@@ -50,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const alg = "HS256";
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-  const token = await new jose.SignJWT({ email: user?.email })
+  const token = await new SignJWT({ email: user?.email })
     .setProtectedHeader({ alg })
     .setExpirationTime("24h")
     .sign(secret);

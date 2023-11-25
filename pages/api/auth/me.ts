@@ -12,7 +12,10 @@ function exclude(user, ...keys) {
   return user;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   // the way we handle without middleware
   // const bearerToken = req.headers["authorization"] as string;
   // console.log("bearerToken:", bearerToken);
@@ -44,8 +47,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const user = await prisma.user.findFirst({
     where: { email: payload.email },
-    select: { id: true, first_name: true, last_name: true, email: true, city: true, phone: true },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      city: true,
+      phone: true,
+    },
   });
 
-  return res.json({ user });
+  if (!user) {
+    return res.status(401).json({ error: "User not found" });
+  }
+
+  return res.json({
+    id: user.id,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    phone: user.phone,
+    city: user.city,
+    email: user.email,
+  });
 }
